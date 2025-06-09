@@ -1,0 +1,64 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  color: #333;
+}
+
+#orders {
+  background: white;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+button {
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+#### 3. *js/app.js* – JavaScript kwa API
+
+Hii ni *JavaScript* inayotumika kuwasiliana na *API* na kupakia orodha za agizo kwenye ukurasa wa mbele.
+
+document.getElementById('load-orders-btn').addEventListener('click', function() {
+  fetchOrders();
+});
+
+function fetchOrders() {
+  fetch('https://panel293051.testpanel.net/privateApi/getOrders?status=active&limit=5&token=YOUR_API_KEY')
+    .then(response => response.json())
+    .then(data => {
+      const ordersContainer = document.getElementById('orders');
+      ordersContainer.innerHTML = ''; // Clear existing content
+
+      if (data.items.length > 0) {
+        data.items.forEach(order => {
+          const orderDiv = document.createElement('div');
+          orderDiv.classList.add('order');
+          orderDiv.innerHTML = <p><strong>Agizo ID:</strong> ${order.id}</p>
+                                <p><strong>Status:</strong> ${order.status}</p>
+                                <p><strong>Salio lililobaki:</strong> ${order.remains}</p>;
+          ordersContainer.appendChild(orderDiv);
+        });
+      } else {
+        ordersContainer.innerHTML = '<p>No orders found.</p>';
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching orders:', error);
+    });
+}
